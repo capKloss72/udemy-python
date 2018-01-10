@@ -48,9 +48,11 @@ class UserRegister(Resource):
         
         user_exists_query = "SELECT COUNT(*) FROM users WHERE username = ?"
         user_exists = cursor.execute(user_exists_query, (data['username'],)).fetchall()
-                
-        if user_exists[0][0] >= 1:
+         
+        if User.find_by_username(data['username']):
             return {'message': "A user with name '{}' already exists".format(data['username'])}, 400
+        #if user_exists[0][0] >= 1:
+        #    return {'message': "A user with name '{}' already exists".format(data['username'])}, 400
         
         add_user_query = "INSERT INTO users VALUES (NULL, ?, ?)"
         cursor.execute(add_user_query, (data['username'], data['password']))
