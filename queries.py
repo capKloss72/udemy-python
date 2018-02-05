@@ -12,4 +12,5 @@ connection.commit()
 
 query = "SELECT * FROM items"
 for i in cursor.execute(query):
+    assert isinstance(i)
     print(i)

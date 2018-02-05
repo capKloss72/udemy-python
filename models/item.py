@@ -1,7 +1,14 @@
 import sqlite3
-from flask_restful import Resource, Api, reqparse
+from db import db
+from flask_restful import reqparse
 
-class ItemModel(object):
+
+class ItemModel(db.Model):
+
+    __tablename__ = 'items'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    price = db.Column(db.Float(precision=2))
 
     def __init__(self, name, price):
         self.name = name

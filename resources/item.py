@@ -23,27 +23,25 @@ class Item(Resource):
         if row:
             return {'item': {'name': row[0],
                             'price': row[1]}}
-        return {'message', 'item not found'}
+        return {'message': "'{}'item not found".format(name)}
 
-    @staticmethod
-    def post(name):
+    def post(self, name):
         data = ItemModel.validate_data(['price'],'This field cannot be left blank').parse_args()
 
-        if ItemModel.find_by_name(name):
-            return {'message': "'{}' already exists".format(name)}
+        if ItemModel.find_by_name(name) != True:
+            return {'message': "'{}' does not exists".format(name)}
 
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
         query = "UPDATE items SET price = ? WHERE name = ?"
-        cursor.execute(query, (name, data['price']))
+        cursor.execute(query, (data['price'], name))
         connection.commit()
         if connection.total_changes > 0:
             connection.close()
             return {'message': "'{}' was added with a price of {}".format(name,data['price'])}, 201
         return {'message': "'{}' was not added".format(name)}, 400
 
-    @staticmethod
-    def delete(name):
+    def delete(self, name):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
         query = "DELETE FROM items WHERE name = ?"
@@ -54,7 +52,6 @@ class Item(Resource):
             return {'message': "'{}' item deleted".format(name)}
         return {'message': "'{}' item was not deleted".format(name)}
 
-    @staticmethod
     def put(self, name):
         data = ItemModel.validate_data(['price'],'This field cannot be left blank').parse_args()
 
@@ -70,8 +67,6 @@ class Item(Resource):
 
 
 class ItemList(Resource):
-
-    @staticmethod
     def get(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()

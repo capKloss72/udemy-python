@@ -5,7 +5,6 @@ from models.user import UserModel
 
 
 class UserRegister(Resource):
-    @property
     def post(self):
 
         connection = sqlite3.connect('data.db')
@@ -14,10 +13,12 @@ class UserRegister(Resource):
         data = UserRegister.validate_data(['username','password'],'This field cannot be left blank').parse_args()
 
         user_exists_query = "SELECT COUNT(*) FROM users WHERE username = ?"
-        cursor.execute(user_exists_query, (data['username'],)).fetchall()
+        user_exists = cursor.execute(user_exists_query, (data['username'],)).fetchall()
 
         if UserModel.find_by_username(data['username']):
             return {'message': "A user with name '{}' already exists".format(data['username'])}, 400
+        #if user_exists[0][0] >= 1:
+        #    return {'message': "A user with name '{}' already exists".format(data['username'])}, 400
 
         add_user_query = "INSERT INTO users VALUES (NULL, ?, ?)"
         cursor.execute(add_user_query, (data['username'], data['password']))
