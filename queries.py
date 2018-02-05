@@ -10,7 +10,6 @@ query = "INSERT INTO items VALUES(NULL, 'pin', 12.25)"
 cursor.execute(query)
 connection.commit()
 
-query = "SELECT * FROM items"
+query = "SELECT * FROM items where name='piano'"
 for i in cursor.execute(query):
-    assert isinstance(i)
     print(i)

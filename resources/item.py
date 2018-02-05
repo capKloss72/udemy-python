@@ -21,8 +21,8 @@ class Item(Resource):
         connection.close()
 
         if row:
-            return {'item': {'name': row[0],
-                            'price': row[1]}}
+            return {'item': {'name': row[1],
+                            'price': row[2]}}
         return {'message': "'{}'item not found".format(name)}
 
     def post(self, name):
@@ -57,7 +57,7 @@ class Item(Resource):
 
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
-        query = "INSERT INTO items VALUES(?, ?)"
+        query = "INSERT INTO items VALUES(NULL, ?, ?)"
         cursor.execute(query, (name, data['price']))
         connection.commit()
         if connection.total_changes > 0:
@@ -74,8 +74,8 @@ class ItemList(Resource):
         result = cursor.execute(query)
         items = []
         for row in result:
-            items.append({'name':row[0],
-                         'price':row[1]})
+            items.append({'name':row[1],
+                         'price':row[2]})
 
         connection.close()
 

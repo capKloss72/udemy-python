@@ -19,16 +19,11 @@ class ItemModel(db.Model):
 
     @classmethod
     def find_by_name(cls, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query = "SELECT * FROM items WHERE name = ?"
-        result = cursor.execute(query, (name,))
-        row = result.fetchone()
-        connection.close()
-        return True if row else False
+        var = cls.query.filter_by(name=name).first() # SELECT * FROM items WHERE name = name
+        return var
 
     @classmethod
-    def validate_data(self, fields, message):
+    def validate_data(cls, fields, message):
         parser = reqparse.RequestParser()
         for field in fields:
             parser.add_argument(field,
